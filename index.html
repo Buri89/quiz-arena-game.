@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz Arena</title>
+<style>
+body{font-family:Arial,sans-serif;background:#101827;color:white;text-align:center;padding:20px}
+main{max-width:480px;margin:25px auto;background:#1e293b;padding:24px;border-radius:20px}
+button{display:block;width:100%;padding:14px;margin:10px 0;border:0;border-radius:12px;background:#38bdf8;color:#082f49;font-size:16px;font-weight:bold}
+button:active{opacity:.8}
+#next{background:#34d399}
+</style>
+</head>
+<body>
+<main>
+<h1>🎮 Quiz Arena</h1>
+<p>Teste dein Wissen und sammle Punkte!</p>
+<p id="progress">Frage 1</p>
+<h2 id="question">Bereit?</h2>
+<div id="answers"></div>
+<p id="feedback"></p>
+<p>Punkte: <strong id="score">0</strong></p>
+<button id="next" hidden onclick="nextQuestion()">Nächste Frage</button>
+</main>
+<script>
+const questions=[
+{q:"Was ist die Hauptstadt von Österreich?",a:["Graz","Wien","Salzburg"],c:1},
+{q:"Wie viele Tage hat eine Woche?",a:["5","7","10"],c:1},
+{q:"Welcher Planet ist unser Zuhause?",a:["Mars","Venus","Erde"],c:2},
+{q:"Wie viel ist 8 × 7?",a:["54","56","64"],c:1},
+{q:"Welche Farbe entsteht aus Blau und Gelb?",a:["Grün","Rot","Lila"],c:0},
+{q:"Wie heißt die Hauptstadt von Deutschland?",a:["Berlin","Hamburg","München"],c:0},
+{q:"Wie viele Minuten hat eine Stunde?",a:["30","60","100"],c:1},
+{q:"Welches Tier bellt?",a:["Katze","Hund","Pferd"],c:1},
+{q:"Wie viele Monate hat ein Jahr?",a:["10","11","12"],c:2},
+{q:"Welcher Ozean ist der größte?",a:["Atlantik","Indischer Ozean","Pazifik"],c:2},
+{q:"Wie heißt der rote Planet?",a:["Mars","Jupiter","Merkur"],c:0},
+{q:"Was ist 100 geteilt durch 4?",a:["20","25","40"],c:1},
+{q:"Welche Sprache spricht man hauptsächlich in Brasilien?",a:["Spanisch","Portugiesisch","Französisch"],c:1},
+{q:"Wie viele Beine hat eine Spinne?",a:["6","8","10"],c:1},
+{q:"Was brauchen Pflanzen für die Fotosynthese?",a:["Licht","Plastik","Sand allein"],c:0},
+{q:"Welches ist ein Säugetier?",a:["Hai","Delfin","Forelle"],c:1},
+{q:"Wie viele Seiten hat ein Dreieck?",a:["3","4","5"],c:0},
+{q:"Welcher Stoff gefriert bei 0 °C ungefähr?",a:["Wasser","Öl","Benzin"],c:0},
+{q:"Welcher Kontinent ist Österreich?",a:["Asien","Europa","Afrika"],c:1},
+{q:"Wie viele Stunden hat ein Tag?",a:["12","24","48"],c:1}
+];
+let index=0,score=0,answered=false;
+function showQuestion(){
+answered=false;
+document.getElementById("feedback").textContent="";
+document.getElementById("next").hidden=true;
+document.getElementById("progress").textContent=`Frage ${index+1} von ${questions.length}`;
+document.getElementById("question").textContent=questions[index].q;
+const box=document.getElementById("answers");box.innerHTML="";
+questions[index].a.forEach((answer,i)=>{
+const b=document.createElement("button");b.textContent=answer;
+b.onclick=()=>chooseAnswer(i,b);box.appendChild(b);
+});
+}
+function chooseAnswer(i,b){
+if(answered)return;answered=true;
+if(i===questions[index].c){score++;document.getElementById("feedback").textContent="Richtig! 🎉";}
+else{document.getElementById("feedback").textContent="Leider falsch. Versuch es weiter!";}
+document.getElementById("score").textContent=score;
+document.querySelectorAll("#answers button").forEach(x=>x.disabled=true);
+document.getElementById("next").hidden=false;
+document.getElementById("next").textContent=index===questions.length-1?"Ergebnis ansehen":"Nächste Frage";
+}
+function nextQuestion(){
+if(index<questions.length-1){index++;showQuestion();}
+else{
+document.getElementById("question").textContent="Quiz beendet! 🏆";
+document.getElementById("answers").innerHTML="";
+document.getElementById("feedback").textContent=`Du hast ${score} von ${questions.length} Punkten erreicht!`;
+document.getElementById("progress").textContent="Dein Ergebnis";
+document.getElementById("next").hidden=false;
+document.getElementById("next").textContent="Nochmal spielen";
+document.getElementById("next").onclick=()=>{index=0;score=0;document.getElementById("score").textContent=0;document.getElementById("next").onclick=nextQuestion;showQuestion();};
+}
+}
+showQuestion();
+</script>
+</body>
+</html>
